@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sortbypop"
+        android:title="@string/sortbypop"/>
+    <item
+        android:id="@+id/sortybyrating"
+        android:title="@string/sortbyrating"
+        android:icon="@mipmap/sort"/>
+
+</menu>

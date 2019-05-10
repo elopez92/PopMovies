@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+    <string name="detailTitle">MovieDetail</string>
+
+    <string name="release_date">Release Date:</string>
+    <string name="plot">Plot Synopsis:</string>
+    <string name="average">User rating:</string>
+
+    <string name="sortbypop">Sort by popular</string>
+    <string name="sortbyrating">Sort by top rating</string>
+
+    <string name="pop">Pop Movies</string>
+    <string name="top_rated">Top Rated Movies</string>
+</resources>
