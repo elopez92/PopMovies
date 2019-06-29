@@ -1,14 +1,57 @@
 <resources>
     <string name="app_name">PopularMovies</string>
     <string name="detailTitle">MovieDetail</string>
+    <string name="trailer_title">Trailers:</string>
 
     <string name="release_date">Release Date:</string>
     <string name="plot">Plot Synopsis:</string>
     <string name="average">User rating:</string>
 
+    <string name="sort">Sort</string>
     <string name="sortbypop">Sort by popular</string>
     <string name="sortbyrating">Sort by top rating</string>
 
-    <string name="pop">Pop Movies</string>
+    <string name="pop">Popular Movies</string>
     <string name="top_rated">Top Rated Movies</string>
+    <string name="fav">Favorite Movies</string>
+
+    <!--        Movie.java  strings          -->
+    <string name="IMG_BASE_URL">http://image.tmdb.org/t/p/</string>
+    <string name="img_size">w185</string>
+
+    <!--        MovieDetails strings         -->
+    <string name="INSTANCE_MOVIE_ID">instanceMovieId</string>
+    <string name="VIDEO_ID">videoID</string>
+
+    <!--        Intent Strings               -->
+    <string name="EXTRA_MOVIE_ID">extraMovieId</string>
+
+    <!--        Uri Strings                 -->
+    <string name="uri_video">vnd.youtube%1$s</string>
+    <string name="url_video">http://www.youtube.com/watch?v=%1$s</string>
+    <string name="action_settings">Settings</string>
+
+
+    <!--        SharedPreference default    -->
+    <string name="pref_sort_by_label">Sort By</string>
+    <string name="pref_sort_by_popular_label">Popular</string>
+    <string name="pref_sort_by_top_label">Top Rated</string>
+    <string name="pref_sort_by_key" translatable="false">sortBy</string>
+    <string name="pref_sort_by_popular_value" translatable="false">popular</string>
+    <string name="pref_sort_by_top_value" translatable="false">top_rated</string>
+    <string name="pref_sort_by_default">popular</string>
+
+    <string name="trailer_tab">Trailer</string>
+    <string name="review_tab">Review</string>
+
+    <string name="youtube_img_url">https://img.youtube.com/vi/%1$s/default.jpg</string>
+    <string name="movie_object">MOVIE_OBJECT</string>
+    <string name="not_favorite">Mark as favorite</string>
+    <string name="favorite_remove">Remove from favorites</string>
+    <string name="favorite_label">Favorites</string>
+    <string name="movie_list_key">movie_key</string>
+    <string name="sort_by_key">sortByKey</string>
+    <string name="pref_sort_by_favorite">favorite</string>
+    <string name="plot_label">Plot</string>
+    <string name="trailer_image_description">Trailer thumbnail</string>
 </resources>

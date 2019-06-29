@@ -7,4 +7,5 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="colorTitleLayout">#00574B</color>
+    <color name="colorTabLayout">#225E26</color>
 </resources>

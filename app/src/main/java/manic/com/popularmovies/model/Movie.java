@@ -1,26 +1,47 @@
 package manic.com.popularmovies.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@Entity
 public class Movie implements Parcelable {
 
+    @PrimaryKey
     private int id;
     private String title;
+    @ColumnInfo(name = "release_date")
     private String releaseDate;
+    @ColumnInfo(name = "movie_poster")
     private String moviePoster;
+    @ColumnInfo(name = "vote_average")
     private String voteAverage;
     private String plot;
 
+    @Ignore
+    private boolean isFavorite = false;
 
     private final static String IMG_BASE_URL = "http://image.tmdb.org/t/p/";
-    private String imgSize = "w185";
+    private final static String imgSize = "w185";
+
+    @Ignore
+    public Movie(String title, String releaseDate, String moviePoster, String voteAverage, String plot){
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.moviePoster = moviePoster;
+        this.voteAverage = voteAverage;
+        this.plot = plot;
+    }
 
     public Movie(int id, String title, String releaseDate, String moviePoster, String voteAverage, String plot){
         this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
-        this.moviePoster = IMG_BASE_URL + imgSize + moviePoster;
+        if(!moviePoster.equals(""))
+        this.moviePoster = moviePoster;
         this.voteAverage = voteAverage;
         this.plot = plot;
     }
@@ -75,7 +96,7 @@ public class Movie implements Parcelable {
     }
 
     public void setMoviePoster(String moviePoster) {
-        this.moviePoster = IMG_BASE_URL + imgSize + moviePoster;
+        this.moviePoster = moviePoster;
     }
 
     public String getVoteAverage() {
@@ -92,6 +113,14 @@ public class Movie implements Parcelable {
 
     public void setPlot(String plot) {
         this.plot = plot;
+    }
+
+    public boolean isFavorite(){
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean isFavorite){
+        this.isFavorite = isFavorite;
     }
 
     @Override

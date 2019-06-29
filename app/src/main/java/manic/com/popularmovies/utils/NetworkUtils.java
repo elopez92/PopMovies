@@ -14,21 +14,41 @@ public class NetworkUtils {
     private static final String  APIKEY = "";
 
 
-    private final static String MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/";
+    private final static String MOVIE_DB_URL = "http://api.themoviedb.org/3/";
+
     //private final static String PARAM_SORT = "sort";
     private final static String API_KEY = "api_key";
 
-    public static URL buildUrl(String sortBy) {
-        Uri builtUri = Uri.parse(MOVIE_DB_URL + sortBy).buildUpon()
+    public static URL buildMovieUrl(String string) {
+        Uri builtUri = Uri.parse(MOVIE_DB_URL + "movie/" +  string).buildUpon()
                 .appendQueryParameter(API_KEY, APIKEY)
                 .build();
 
+        return buildUrl(builtUri);
+    }
 
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+    public static URL buildMovieFindByIdUrl(String id){
+        Uri buildUri = Uri.parse(MOVIE_DB_URL + "movie/" + id).buildUpon()
+                .appendQueryParameter(API_KEY, APIKEY)
+                .build();
+
+        return buildUrl(buildUri);
+    }
+
+    public static URL buildUrl(String id, String type){
+        Uri builtUri = Uri.parse(MOVIE_DB_URL + "movie/" +  id +"/" + type).buildUpon()
+                .appendQueryParameter(API_KEY, APIKEY)
+                .build();
+
+        return buildUrl(builtUri);
+    }
+
+    private static URL buildUrl(Uri uri){
+        URL url= null;
+        try{
+            url = new URL(uri.toString());
+        } catch(MalformedURLException mue){
+            mue.printStackTrace();
         }
         return url;
     }

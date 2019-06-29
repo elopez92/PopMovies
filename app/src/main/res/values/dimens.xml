@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="movie_title_size">30sp</dimen>
+    <dimen name="movie_title_size_land">25sp</dimen>
+    <dimen name="label_size">16dp</dimen>
+
+    <dimen name="padding">16dp</dimen>
+    <dimen name="text_size">15sp</dimen>
+    <dimen name="review_title">20sp</dimen>
+    <dimen name="review_title_padding_bottom">10dp</dimen>
+    <dimen name="margin32">32dp</dimen>
+    <dimen name="overview_title_size">17sp</dimen>
+</resources>

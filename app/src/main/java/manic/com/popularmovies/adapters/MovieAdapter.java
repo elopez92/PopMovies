@@ -1,9 +1,8 @@
-package manic.com.popularmovies.utils;
+package manic.com.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,10 @@ import manic.com.popularmovies.model.Movie;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-
-    Context mContext;
-    List<Movie> movies;
+    private Context mContext;
+    private List<Movie> movies;
+    private final static String IMG_BASE_URL = "http://image.tmdb.org/t/p/";
+    private final static String imgSize = "w185";
 
     private final MovieAdapterOnClickHandler mClickHandler;
 
@@ -46,8 +46,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        String img = IMG_BASE_URL + imgSize + movies.get(position).getMoviePoster();
         Picasso.get()
-                .load(movies.get(position).getMoviePoster())
+                .load(img)
                 .fit()
                 .into(holder.imageView);
     }
@@ -85,7 +86,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     public void setMovieData(List<Movie> movieData){
-        movies = movieData;
+        movies = null;
+        movies =  movieData;
         notifyDataSetChanged();
     }
+
+    public List<Movie> getMovieData(){
+        return movies;
+    }
+
 }

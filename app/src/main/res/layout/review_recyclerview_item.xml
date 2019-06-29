@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:padding="@dimen/padding">
+    <TextView
+        tool:text="Title"
+        android:textSize="@dimen/review_title"
+        android:textStyle="bold"
+        android:id="@+id/review_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="@dimen/review_title_padding_bottom"/>
+    <TextView
+        tool:text="Description"
+        android:id="@+id/review_description_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/review_title_tv"/>
+
+</android.support.constraint.ConstraintLayout>
