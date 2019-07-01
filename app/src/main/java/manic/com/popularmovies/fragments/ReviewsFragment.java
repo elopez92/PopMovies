@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,15 +28,22 @@ import manic.com.popularmovies.utils.JsonUtils;
 import manic.com.popularmovies.utils.NetworkUtils;
 import manic.com.popularmovies.utils.Utils;
 
-public class ReviewsFragment extends Fragment implements ReviewAdapter.ReviewAdapterOnClickHandler {
+public class ReviewsFragment extends Fragment implements ReviewAdapter.ReviewAdapterOnClickHandler, LoaderManager.LoaderCallbacks<List<Review>>{
     private static final String TAG = "ReviewsFragment";
-    private static final int REVIEW_SEARCH_LOADER = 11;
     private static final String SEARCH_QUERY_URL_EXTRA = "query";
+    private static final int REVIEW_LOADER = 11;
 
     private RecyclerView recyclerView;
     private ReviewAdapter mAdapter;
 
+    List<Review> reviews;
     private Movie movie;
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loadReviews();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reviews_fragment, container, false);
@@ -50,26 +58,21 @@ public class ReviewsFragment extends Fragment implements ReviewAdapter.ReviewAda
         recyclerView.addItemDecoration(Utils.getDividerItemDecoration(getContext(), mLayoutManager));
 
         listener.onFragmentCreated(this);
-        loadReviews();
 
         return view;
     }
 
     public void loadReviews(){
-        final List<Review>[] reviews = new List[]{new ArrayList<>()};
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL trailerRequestUrl = NetworkUtils.buildUrl(String.valueOf(movie.getId()), "reviews");
-                    String jsonReviewResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
-                    reviews[0] = JsonUtils.parseReviewJson(jsonReviewResponse);
-                    mAdapter.setReviews(reviews[0]);
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-            }
-        });
+        Bundle reviewBundle = new Bundle();
+
+
+        LoaderManager loaderManager = getLoaderManager();
+        Loader<String> reviewLoader = loaderManager.getLoader(REVIEW_LOADER);
+        if (reviewLoader == null) {
+            loaderManager.initLoader(REVIEW_LOADER, reviewBundle, this);
+        } else {
+            loaderManager.restartLoader(REVIEW_LOADER, reviewBundle, this);
+        }
     }
 
     @Override
@@ -86,6 +89,53 @@ public class ReviewsFragment extends Fragment implements ReviewAdapter.ReviewAda
         this.movie = movie;
     }
 
+    @NonNull
+    @Override
+    public Loader onCreateLoader(int i, @Nullable Bundle bundle) {
+        return new AsyncTaskLoader<List<Review>>(getContext()) {
+
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+
+                if(reviews != null){
+                    deliverResult(reviews);
+                }
+
+                forceLoad();
+            }
+
+            @Nullable
+            @Override
+            public List<Review> loadInBackground() {
+                try {
+                    URL trailerRequestUrl = NetworkUtils.buildUrl(String.valueOf(movie.getId()), "reviews");
+                    String jsonReviewResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
+                    reviews = JsonUtils.parseReviewJson(jsonReviewResponse);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+                return reviews;
+            }
+
+            @Override
+            public void deliverResult(@Nullable List<Review> data) {
+                reviews = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<List<Review>> loader, List<Review> reviews) {
+
+        mAdapter.setReviews(reviews);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader loader) {
+
+    }
 
 
     public interface OnFragmentInteractionListener {

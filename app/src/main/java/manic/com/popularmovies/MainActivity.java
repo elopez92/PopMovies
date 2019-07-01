@@ -84,7 +84,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         display.getSize(size);
 
         int width = size.x;
-        int numColumns = width / 600;
+        int columns = width / 600;
+        int numColumns = 2;
+
+        if(columns > numColumns)
+            numColumns = columns;
 
         //AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(this, )
         GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns);
@@ -157,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 editor.apply();
                 break;
             case R.id.favorites:
+                editor.putString(getString(R.string.pref_sort_by_key), "");
+                editor.apply();
                 setTitle(getString(R.string.favorite_label));
                 setupFavoriteViewModel();
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {

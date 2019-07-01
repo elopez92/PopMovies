@@ -56,7 +56,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     @Override
     public long getItemId(int position) {
         if(trailers == null)
-            return 1;
+            return 0;
         else
             return trailers.size();
     }
@@ -64,7 +64,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     @Override
     public int getItemCount() {
         if(trailers == null)
-            return 1;
+            return 0;
         else
             return trailers.size();
     }

@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,18 +35,65 @@ import manic.com.popularmovies.utils.Utils;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrailerFragment extends Fragment implements TrailerAdapter.TrailerAdapterOnClickHandler{
+public class TrailerFragment extends Fragment implements TrailerAdapter.TrailerAdapterOnClickHandler, LoaderManager.LoaderCallbacks<List<Trailer>> {
     private static final String TAG = "TrailerFragment";
-    private static final int REVIEW_SEARCH_LOADER = 12;
+    private static final int TRAILER_LOADER = 12;
 
     private RecyclerView trailer_rv;
     private TrailerAdapter mTrailerAdapter;
-    Movie movie;
+    private List<Trailer> trailers;
+    private Movie movie;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //startLoader();
+        startLoader();
+    }
+
+    @NonNull
+    @Override
+    public Loader<List<Trailer>> onCreateLoader(int i, @Nullable Bundle bundle) {
+        return new AsyncTaskLoader<List<Trailer>>(getContext()) {
+
+            @Override
+            protected void onStartLoading() {
+                if(trailers != null){
+                    deliverResult(trailers);
+                }
+                forceLoad();
+            }
+
+            @Nullable
+            @Override
+            public List<Trailer> loadInBackground() {
+                try {
+                    URL trailerRequestUrl = NetworkUtils.buildUrl(String.valueOf(movie.getId()), "videos");
+                    String jsonTrailerResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
+                    trailers = JsonUtils.parseTrailerJson(jsonTrailerResponse);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+                return trailers;
+            }
+
+            @Override
+            public void deliverResult(@Nullable List<Trailer> data) {
+                trailers = data;
+                super.deliverResult(data);
+            }
+        };
+
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<List<Trailer>> loader, List<Trailer> trailers) {
+        mTrailerAdapter.setTrailerData(trailers);
+    }
+
+
+    @Override
+    public void onLoaderReset(@NonNull Loader loader) {
+
     }
 
     public interface OnFragmentInteractionListener {
@@ -74,25 +124,19 @@ public class TrailerFragment extends Fragment implements TrailerAdapter.TrailerA
         listener.onFragmentCreated(this);
         trailer_rv.setItemViewCacheSize(0);
 
-        getTrailers();
-
         return view;
     }
 
-    public void getTrailers(){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL trailerRequestUrl = NetworkUtils.buildUrl(String.valueOf(movie.getId()), "videos");
-                    String jsonTrailerResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
-                    List<Trailer> trailers = JsonUtils.parseTrailerJson(jsonTrailerResponse);
-                    mTrailerAdapter.setTrailerData(trailers);
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-            }
-        });
+
+
+    public void startLoader(){
+        LoaderManager loaderManager = getLoaderManager();
+        Loader<String> reviewLoader = loaderManager.getLoader(TRAILER_LOADER);
+        if (reviewLoader == null) {
+            loaderManager.initLoader(TRAILER_LOADER, null, this);
+        } else {
+            loaderManager.restartLoader(TRAILER_LOADER, null, this);
+        }
     }
 
 
