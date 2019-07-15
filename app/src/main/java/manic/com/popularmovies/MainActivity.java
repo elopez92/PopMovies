@@ -1,5 +1,6 @@
 package manic.com.popularmovies;
 
+import android.app.SearchManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
@@ -12,10 +13,12 @@ import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +46,7 @@ import manic.com.popularmovies.utils.NetworkUtils;
 import manic.com.popularmovies.utils.Utils;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener, SearchView.OnQueryTextListener {
 
     private final String SORT_BY_POPULAR = "popular";
     private final String SORT_BY_TOPRATED = "top_rated";
@@ -143,6 +146,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+
+        MenuItem searchMenu = menu.findItem(R.id.action_search);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) searchMenu.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(this);
+        searchView.setSubmitButtonEnabled(true);
         return true;
     }
 
@@ -233,20 +244,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
 
     private void getMovies(final String sortBy){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                URL movieRequestUrl = NetworkUtils.buildMovieUrl(sortBy);
-                try{
-                    String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                    List<Movie> list = JsonUtils.parseMovieJson(jsonMovieResponse);
-                    movies.postValue(null);
-                    movies.postValue(list);
-                }catch (IOException ioe){
-                    ioe.printStackTrace();
-                }
-            }
-        });
+        JsonUtils.getJsonResponse(null, sortBy, this);
     }
 
     private void getFavorites(final List<Favorite> favoriteslist){
@@ -270,5 +268,30 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        if(mMovieAdapter!=null)
+            mMovieAdapter.getFilter().filter(s);
+        return true;
+    }
+
+    public void setMovies(List<Movie> movies){
+        this.movies.postValue(movies);
+        mMovieAdapter.setMovieData(movies);
     }
 }

@@ -96,14 +96,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerFr
     }
 
     private void populateUI(Movie movie){
-        String img = IMG_BASE_URL + imgSize + movie.getMoviePoster();
+        String img = IMG_BASE_URL + imgSize + movie.getPosterPath();
         titleTV.setText(movie.getTitle());
         Picasso.get()
                 .load(img)
                 .into(posterImgIV);
         releaseDateTV.setText(ReleaseDateUtils.formatDate(movie.getReleaseDate()));
-        plotTV.setText(movie.getPlot());
-        ratingTV.setText(movie.getVoteAverage());
+        plotTV.setText(movie.getOverview());
+        ratingTV.setText(String.valueOf(movie.getVoteAverage()));
     }
 
     private void initViews(){
@@ -154,9 +154,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerFr
                 int id = movie.getId();
                 String title = movie.getTitle();
                 String releaseDate = movie.getReleaseDate();
-                String moviePoster = movie.getMoviePoster();
-                String voteAverage = movie.getVoteAverage();
-                String plot = movie.getPlot();
+                String moviePoster = movie.getPosterPath();
+                String voteAverage = String.valueOf(movie.getVoteAverage());
+                String plot = movie.getOverview();
                 final Favorite favorite = new Favorite(id, title, releaseDate, moviePoster, voteAverage, plot);
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override

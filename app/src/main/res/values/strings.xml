@@ -54,4 +54,6 @@
     <string name="pref_sort_by_favorite">favorite</string>
     <string name="plot_label">Plot</string>
     <string name="trailer_image_description">Trailer thumbnail</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search movie</string>
 </resources>

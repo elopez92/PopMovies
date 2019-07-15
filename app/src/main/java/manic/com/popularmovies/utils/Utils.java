@@ -29,7 +29,7 @@ public class Utils {
             String plot = favorite.getPlot();
             String voterAverage = favorite.getVoteAverage();
 
-            Movie movie = new Movie(id, title, releaseDate, moviePoster, voterAverage, plot);
+            Movie movie = new Movie(id, title, releaseDate, moviePoster, Double.parseDouble(voterAverage), plot);
             movies.add(movie);
         }
         return movies;
